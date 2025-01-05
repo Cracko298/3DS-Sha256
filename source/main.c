@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sha256.h" // Include the custom SHA-256 implementation
+#include "sha256.h"
 
 void sha256_hash(const uint8_t *data, size_t length, uint8_t *hash) {
     SHA256_CTX ctx;
@@ -12,12 +12,10 @@ void sha256_hash(const uint8_t *data, size_t length, uint8_t *hash) {
 }
 
 int main() {
-    // Initialize services
     gfxInitDefault();
     consoleInit(GFX_TOP, NULL);
     fsInit();
 
-    // Open the file
     FILE *file = fopen("sdmc:/testFile.txt", "rb");
     if (!file) {
         printf("Failed to open file\n");
@@ -26,12 +24,10 @@ int main() {
         return 1;
     }
 
-    // Get the file size
     fseek(file, 0, SEEK_END);
     size_t fileSize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    // Read the file into a buffer
     uint8_t *buffer = (uint8_t *)malloc(fileSize);
     if (!buffer) {
         printf("Failed to allocate memory\n");
@@ -42,11 +38,9 @@ int main() {
     fread(buffer, 1, fileSize, file);
     fclose(file);
 
-    // Compute the SHA-256 hash
     uint8_t hash[32];
     sha256_hash(buffer, fileSize, hash);
 
-    // Print the hash
     printf("SHA-256 hash: ");
     for (int i = 0; i < 32; i++) {
         printf("%02x", hash[i]);
